@@ -8,22 +8,26 @@ import org.springframework.stereotype.Service;
 
 import com.skilldistillery.entities.Company;
 import com.skilldistillery.entities.Job;
+import com.skilldistillery.repositories.CompanyRepository;
 import com.skilldistillery.repositories.JobRepository;
 
 @Service
 public class JobServiceImpl implements JobService {
 
 	@Autowired
-	JobRepository repo;
+	JobRepository jRepo;
 
+	@Autowired
+	CompanyRepository cRepo;
+	
 	@Override
 	public List<Job> index() {
-		return repo.findAll();
+		return jRepo.findAll();
 	}
 
 	@Override
 	public Job findById(int id) {
-		Optional<Job> op = repo.findById(id);
+		Optional<Job> op = jRepo.findById(id);
 		Job j = null;
 		if (op.isPresent()) {
 			j = op.get();
@@ -32,32 +36,91 @@ public class JobServiceImpl implements JobService {
 	}
 
 	@Override
-	public Job create(Job job) {
+	public Job createJob (Job job) {
 		Company c = new Company();
 		c.setId(1);
 		job.setCompany(c);
-		return repo.saveAndFlush(job);
+		return jRepo.saveAndFlush(job);
 	}
 
 	@Override
-	public Job update(Job job, int id) {
-		job.setId(id);
-		Company c = new Company();
-		c.setId(1);
-		job.setCompany(c);
-		if (repo.existsById(id)) {
-			return repo.save(job);
+	public Job updateJob(Job job, int id) {
+		Optional <Job> jobOpt = jRepo.findById(id);
+		if (jobOpt.isPresent())  {
+			Job managedJob = jobOpt.get();
+			managedJob.setId(job.getId());
+			managedJob.setDate(job.getDate());
+			managedJob.setSalaryMax(job.getSalaryMax());
+			managedJob.setSalaryMin(job.getSalaryMin());
+			managedJob.setUrl(job.getUrl());
+			managedJob.setDescription(job.getDescription());
+			managedJob.setLocation(job.getLocation());
+			managedJob.setRequirements(job.getRequirements());
+			managedJob.setSupervisory(job.getSupervisory());
+			managedJob.setStatus(job.getStatus());
+			
+			if(job.getCompany().getId() > 1) {
+				managedJob.setCompany(job.getCompany());
+			} else {
+				Company company = cRepo.getOne(1);
+				managedJob.setCompany(company);
+			}
+			return jRepo.saveAndFlush(managedJob);
 		}
 		return null;
 
 	}
 
+	
 	@Override
-	public void delete(int id) {
-		if (repo.existsById(id)) {
-			repo.deleteById(id);
+	public boolean deleteJob (int id)  {	
+				if (id <= 1) {
+				return false;
+			}
+			
+			Optional <Job> jobOpt = jRepo.findById(id);
+			if (jobOpt.isPresent())  {
+				Job job = jobOpt.get();
+				jRepo.delete(job);
+			
+				return true;
+			}
+			else {
+	
+				return false;
+			}
+	
 		}
+			
 
+	@Override
+	public List<Job> findBySalaryMaxBetween(double low, double high) {
+		return findBySalaryMaxBetween(low, high);
 	}
+
+
+
+	@Override
+	public List<Job> findByKeyword(String keyword) {
+		return jRepo.findByTitleContaining(keyword);
+	}
+
+	@Override
+	public List<Job> findByCompanyAndLocation(Company company, String location) {
+		return jRepo.findByCompanyAndLocation(company, location);
+	
+	}
+
+	@Override
+	public List<Job> findByCompanyId (int compId) {
+			return jRepo.findByCompanyId (compId);
+	}
+
+	@Override
+	public List<Job> getJobsByCompany(int compId) {
+		return jRepo.getJobsByCompany(compId);
+	}
+
+
 
 }
