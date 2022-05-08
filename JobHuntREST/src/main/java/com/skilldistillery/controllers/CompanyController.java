@@ -73,6 +73,7 @@ public class CompanyController {
 				updatedCompany = cserv.updateCompany (company, id);
 				if (updatedCompany == null) {
 					res.setStatus(404);
+					return null;
 				}
 				res.setStatus(202);
 				StringBuffer url = req.getRequestURL();
@@ -129,7 +130,7 @@ public class CompanyController {
 			
 		} catch (Exception e) {
 			e.printStackTrace();
-			res.setStatus(400);
+			res.setStatus(404);
 			return null;
 		}
 		return jobCreated;

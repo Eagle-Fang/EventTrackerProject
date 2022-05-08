@@ -7,7 +7,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.skilldistillery.entities.Company;
+import com.skilldistillery.entities.Job;
 import com.skilldistillery.repositories.CompanyRepository;
+import com.skilldistillery.repositories.JobRepository;
 
 @Service
 public class CompanyServiceImpl implements CompanyService {
@@ -15,6 +17,9 @@ public class CompanyServiceImpl implements CompanyService {
 	@Autowired
 	CompanyRepository cRepo;
 
+//	@Autowired
+//	JobRepository jRepo;
+	
 	@Override
 	public List<Company> index() {
 		return cRepo.findAll();
@@ -32,6 +37,9 @@ public class CompanyServiceImpl implements CompanyService {
 			Company managedCompany = compOpt.get();
 			managedCompany.setName(company.getName());
 			managedCompany.setLocation(company.getLocation());
+			managedCompany.setPocName(company.getPocName());
+			managedCompany.setPocEmail(company.getPocEmail());
+			managedCompany.setWebsite(company.getWebsite());			
 			cRepo.saveAndFlush(managedCompany);
 			return managedCompany;
 		}
@@ -55,4 +63,7 @@ public class CompanyServiceImpl implements CompanyService {
 
 	}
 
+	
+	
+	
 }

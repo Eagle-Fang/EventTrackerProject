@@ -45,8 +45,8 @@ class JobTest {
 	@DisplayName("testing job entity")
 	void test1() {
 		assertNotNull(job);
-		assertEquals("Full Stack Engineer", job.getTitle());
-		assertEquals(100000,job.getSalaryMin());
+		assertEquals("Full Stack Engineer ", job.getTitle());
+		assertEquals(125000,job.getSalaryMin());
 	}
 	
 }

@@ -17,7 +17,7 @@ public interface JobRepository extends JpaRepository <Job, Integer> {
 	List<Job> findByCompanyId (int compId);
 	
 	//	Write a method stub that will find a collection of jobs by their company that are not supervisory
-	List<Job> findByCompanyAndLocation (Company company, String location);
+	List<Job> findByCompanyIdAndLocation (int id, String location);
 	
 	//	Write a method stub that will find a collection of films that salary within a specific range.
 	List<Job> findBySalaryMaxBetween (Integer min, Integer max);
@@ -29,7 +29,7 @@ public interface JobRepository extends JpaRepository <Job, Integer> {
 
 	List<Job> findByTitleContaining(String keyword);
 
-	List<Job> getJobsByCompany (int compId);
+	List<Job> getJobsByCompanyId (int compId);
 	
 	
 	

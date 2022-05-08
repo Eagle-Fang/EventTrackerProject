@@ -20,14 +20,14 @@ public interface JobService {
 	
 	boolean deleteJob (int id);
 	
-	List<Job> findBySalaryMaxBetween(double low, double high);
+	List<Job> findBySalaryMaxBetween(Integer low, Integer high);
 
 	List<Job> findByKeyword(String keyword);
 	
-	List<Job> findByCompanyAndLocation (Company company, String location);
+	List<Job> findByCompanyIdAndLocation (int id, String location);
 
 	List<Job> findByCompanyId (int compId);
 
-	List<Job> getJobsByCompany(int compId);
+	List<Job> getJobsByCompanyId (int compId);
 		
 }

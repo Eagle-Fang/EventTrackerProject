@@ -46,18 +46,19 @@ public class JobController {
 			HttpServletResponse res
 			)  {
 		try {
-			serv.createJob(job);
+			job = serv.createJob(job);
 			res.setStatus(201);
 			StringBuffer url = req.getRequestURL();
 			url.append("/").append(job.getId());
 			res.setHeader("Location", url.toString());
+			return job;
 		} catch (Exception e) {
 			e.printStackTrace();
 			res.setStatus(400);
 			job = null;
 		
 		}
-		return job;
+		return null;
 	}
 	
 	
@@ -66,21 +67,29 @@ public class JobController {
 	public Job updateJob(
 		@RequestBody Job job,
 		@PathVariable int id,  
+		HttpServletRequest req,
 		HttpServletResponse res
 		)  {
-		Job updatedjob = null;
+		Job updatedJob = null;
 		
 			try {
-				updatedjob = serv.updateJob(job, id);
-				if (job == null) {
+				updatedJob = serv.updateJob(job, id);
+				if (updatedJob == null) {
 					res.setStatus(404);
+					return null;
 				}
+				res.setStatus(200);
+				StringBuffer url = req.getRequestURL();
+				url.append("/").append(updatedJob.getId());
+				res.setHeader("Location", url.toString());
+				
+				
 			} catch (Exception e) {
 				e.printStackTrace();
 				res.setStatus(400);
-				job = null;
+				updatedJob = null;
 			}
-			return job;
+			return updatedJob;
 		}
 	
 
@@ -116,26 +125,27 @@ public class JobController {
 	//Jobs by Price Range
 		@GetMapping("jobs/search/salary/{low}/{high}")
 		public List<Job> findBySalaryMaxBetween(
-				@PathVariable double low, 
-				@PathVariable double high
+				@PathVariable Integer low, 
+				@PathVariable Integer high
 				) {
 			return serv.findBySalaryMaxBetween(low, high);	
 		}
 	
 		// Find jobs by Company Id
 		@GetMapping("companies/{compId}/jobs")
-		public List<Job> findByCompany (
+		public List<Job> findByCompanyId (
 				@PathVariable int compId) {
-			return serv.getJobsforCompany (compId);
+			return serv.getJobsByCompanyId (compId);
 		}
 		
 		
 		// Find jobs by Company and Location
 
 		@GetMapping("companies/{companyId}/{location}/jobs")
-		public List<Job> findByCompanyAndLocation (
-				@PathVariable String keyword) {
-			return serv.findByKeyword(keyword);
+		public List<Job> findByCompanyIdAndLocation (
+				@PathVariable int companyId,
+				@PathVariable String location) {
+			return serv.findByCompanyIdAndLocation(companyId, location);
 		}
 		
 		

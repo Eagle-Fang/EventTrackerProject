@@ -59,10 +59,10 @@ public class JobServiceImpl implements JobService {
 			managedJob.setSupervisory(job.getSupervisory());
 			managedJob.setStatus(job.getStatus());
 			
-			if(job.getCompany().getId() > 1) {
+			if(job.getCompany().getId() > 3) {
 				managedJob.setCompany(job.getCompany());
 			} else {
-				Company company = cRepo.getOne(1);
+				Company company = cRepo.getById(1);
 				managedJob.setCompany(company);
 			}
 			return jRepo.saveAndFlush(managedJob);
@@ -94,8 +94,8 @@ public class JobServiceImpl implements JobService {
 			
 
 	@Override
-	public List<Job> findBySalaryMaxBetween(double low, double high) {
-		return findBySalaryMaxBetween(low, high);
+	public List<Job> findBySalaryMaxBetween(Integer low, Integer high) {
+		return jRepo.findBySalaryMaxBetween(low, high);
 	}
 
 
@@ -106,8 +106,8 @@ public class JobServiceImpl implements JobService {
 	}
 
 	@Override
-	public List<Job> findByCompanyAndLocation(Company company, String location) {
-		return jRepo.findByCompanyAndLocation(company, location);
+	public List<Job> findByCompanyIdAndLocation(int id, String location) {
+		return jRepo.findByCompanyIdAndLocation (id, location);
 	
 	}
 
@@ -117,8 +117,8 @@ public class JobServiceImpl implements JobService {
 	}
 
 	@Override
-	public List<Job> getJobsByCompany(int compId) {
-		return jRepo.getJobsByCompany(compId);
+	public List<Job> getJobsByCompanyId (int compId) {
+		return jRepo.getJobsByCompanyId (compId);
 	}
 
 
