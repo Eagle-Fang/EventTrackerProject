@@ -15,9 +15,11 @@ The POSTMAN file is included with test routes.
 
 As you can see Entity Diagram, there is a one to many relationship between Company and Job. One Company can have more than one job, while each individual instanct of a Job is associated with only one company.
 
-![Alt text](https://github.com/Eagle-Fang/EventTrackerProject/blob/main/DB/Untitled.png)
+![Alt text](https://github.com/Eagle-Fang/EventTrackerProject/blob/main/DB/erdiagram.png)
 
 
 
 ### Expected Route
 The Postman routes file is included with the source code.  It can be imported into Postman.   
+
+![Alt text] https://github.com/Eagle-Fang/EventTrackerProject/blob/main/Postman/RoutesTable.png
