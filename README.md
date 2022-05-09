@@ -22,4 +22,4 @@ As you can see Entity Diagram, there is a one to many relationship between Compa
 ### Expected Route
 The Postman routes file is included with the source code.  It can be imported into Postman.   
 
-![Alt text] https://github.com/Eagle-Fang/EventTrackerProject/blob/main/Postman/RoutesTable.png
+![Alt text](https://github.com/Eagle-Fang/EventTrackerProject/blob/main/Postman/RoutesTable.png)
