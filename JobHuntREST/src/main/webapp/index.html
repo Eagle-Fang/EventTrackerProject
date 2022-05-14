@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="UTF-8">
+<title>JobTracker</title>
+ <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<script type="text/javascript" src="js/jobFunctions.js"></script>
+</head>
+
+<body>
+<div class = "container">
+<h1>Welcome to REST Job tracker</h1>
+
+<form name="getAllButton">
+    <br><h4> Search existing job list:</h4> <br> 
+      <button name="lookupAll">List All Jobs</button>
+    </form>
+<br>
+
+ <form name="getBySalaryMin" id="getBySalaryMin">
+      <input type="number" name="salaryMin" placeholder="$100, 000" required min="1"><br> 
+      <button name="lookupBySalaryMin">Get Jobs by Min Salary</button><br><br>
+    </form>
+
+<div id="output">
+	<div id="jobDataSalary"></div>
+	<div id="jobData"></div>
+	<div id="oneJobData"></div>
+	<div id="editJob"></div>
+	<div id="companyJobData"></div>
+</div>
+<br>
+<form name="addJobForm">
+	<h4> Enter new job information below:</h4> <br>
+	Title: <input type="text" name="title"> <br>
+	Date: <input type="text" name="date" value="2022-05-01"> <br>
+	Max Salary: <input type="text" name="salaryMax"> <br> 
+	Min Salary: <input type="text" name="salaryMin"> <br>
+	Url: <input type="text" name="url"> <br>
+	Description: <input type="text" name="description"> <br> 
+	Location: <input type="text" name="location"> <br>
+	Requirements: <input type="text" name="requirements"> <br>
+	Supervisory: <input type="text" name="supervisory" value="false"> <br>
+	Status: <input type="text" name="status"> <br>
+	<!-- Company: <input type="text" name="company" value="WeHireAll"><br> -->
+	<br><button name="submit">Add Job</button>
+</form>
+</div>
+
+
+</body>
+</html>
