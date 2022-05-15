@@ -4,13 +4,31 @@
 <head>
 <meta charset="UTF-8">
 <title>JobTracker</title>
- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 <script type="text/javascript" src="js/jobFunctions.js"></script>
+<style>
+/* //pointer-events:none; */
+table, th, td {
+  border: 1px solid;
+}
+table {width: 100%;}
+
+table.row-clickable tbody tr td {
+    padding: 0;
+}
+
+table.row-clickable tbody tr td a {
+    display: block;
+    padding: 8px;
+}
+
+</style>
+
 </head>
 
 <body>
 <div class = "container">
-<h1>Welcome to REST Job tracker</h1>
+<h1>Welcome to JobHunt Tracker</h1>
 
 <form name="getAllButton">
     <br><h4> Search existing job list:</h4> <br> 

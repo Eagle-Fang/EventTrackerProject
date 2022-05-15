@@ -4,33 +4,35 @@ window.addEventListener('load', function(e) {
 });
 
 function init() {
-	document.getAllButton.lookupAll.addEventListener('click', function(e) {
-		e.preventDefault();
+	document.getAllButton.lookupAll.addEventListener('click', function(event) {
+		event.preventDefault();
 		getAllJobs();
-	})
+	});
 
-	document.addJobForm.submit.addEventListener('click', function(e) {
-		e.preventDefault();
+	document.addJobForm.submit.addEventListener('click', function(event) {
+		event.preventDefault();
 		createJob();
-	})
+	});
 
-	document.getByDate.lookupBySalary.addEventListener('click', function(e) {
-		e.preventDefault();
+	document.getBySalaryMin.lookupBySalaryMin.addEventListener('click', function(event) {
+		event.preventDefault();
 		getBySalary();
-	})
-
+	});
+}
 
 function getAllJobs() {
 	let xhr = new XMLHttpRequest();
 	
-	xhr.open('GET', 'api/jobs/');
+	xhr.open('GET', 'api/jobs', true);
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState === 4 && xhr.status < 400) {
-				var jobs = JSON.parse(xhr.responseText);
-				console.log(jobs)
-				displayJobs(jobs);
+	
+				let job = JSON.parse(xhr.responseText);
+				console.log(job);
+				displayJobs(job);
 			}
-				
+
+						
 		if (xhr.readyState === 4 && xhr.status >= 400) {
 			console.error(xhr.status + ': ' + xhr.responseText);
 			var dataDiv = document.getElementById('jobData');
@@ -48,30 +50,42 @@ function displayJobs(jobs)  {
 	var dataDiv = document.getElementById('jobData');
 	dataDiv.textContent = '';
 	
-	let br = document.createElement('br');
-	dataDiv.appendChild(br);
+	//let br = document.createElement('br');
+	//dataDiv.appendChild(br);
 	let hr = document.createElement('hr');
 	dataDiv.appendChild(hr);
-	let table = document.createElement('table');
-	dataDiv.appendChild(table);
-	dataDiv.appendChild(br);
-	
-	jobs.forEach(function(job, index, arr){
-		let tr = document.createElement('tr');
-		let td = document.createElement('td');
-		td.textContent = job.title;
-		
-		td.addEventListener('click', function(e) {
-			displayJob(job);	
-		})
-		dataDiv.appendChild(td);
-		dataDiv.appendChild(tr);
-	})
-	
-	let hr1 = document.createElement('hr');
-	dataDiv.appendChild(hr1);
-}
+	var table = document.createElement('table');
+	table.id = 'jobsTable';
 
+	var thead = document.createElement('thead');
+	
+	jobs.forEach(function(job, ind, array){
+	
+		var tr = document.createElement('tr');
+		var jobId = document.createElement('td');
+		var jobComp = document.createElement('td');
+		var jobTitle = document.createElement('td');
+	
+		jobId.textContent = job.id;
+		jobComp.textContent = job.company.name;
+		jobTitle.textContent = job.title;
+			
+		tr.appendChild(jobId);
+		tr.appendChild(jobComp);
+		tr.appendChild(jobTitle);
+		thead.appendChild(tr);
+		
+		tr.addEventListener('click', function(e) {
+			displayJob(job);	
+		});
+					
+	let hr1 = document.createElement('hr');
+	table.appendChild(thead);
+	dataDiv.appendChild(table);
+	var rows = document.querySelectorAll("tr");
+
+	
+});
 
 
 function createJob(e) {
@@ -84,18 +98,18 @@ function createJob(e) {
 
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState === 4) {
-			if (xhr.status == 200 || xhr.status == 201) 
+			if (xhr.status == 200 || xhr.status == 201) {
 				let data = JSON.parse(xhr.responseText);
 				console.log(data);
 				getAllJobs();
-			}
-			else {
+			}  else {
 				console.error("Failed to Add new Job.");
 				console.error(xhr.status + ': ' + xhr.responseText);
 			}
 		}
 	};
 		let form = document.addJob;
+
 		let newJobObject = {
 		Title: document.createJobForm.title.value,
 		Date : document.createJobForm.date.value,
@@ -110,16 +124,16 @@ function createJob(e) {
 	};
 	var objectJson = JSON.stringify(newJobObject);
 	xhr.send(objectJson);
+
 }
 
-
 function displayJob(job) {
-	let dataDiv = document.getElementById('onejobData');
+	let dataDiv = document.getElementById('oneJobData');
 	dataDiv.textContent = '';
 
-	let h1 = document.createElement('h1');
-	h1.textContent = job.title;
-	dataDiv.appendChild(h1);
+	let h4 = document.createElement('h4');
+	h4.textContent = "Job #"+ job.id + "("+job.company.name+"): " + job.title;
+	dataDiv.appendChild(h4);
 
 	let descripJ = document.createElement('p');
 	descripJ.textContent = "Job Description: "+job.description;
@@ -133,16 +147,19 @@ function displayJob(job) {
 	let requirements = document.createElement('li');
 	let supervisory = document.createElement('li');
 	let status = document.createElement('li');
-	let company = document.createElement('li');
 
 	date.textContent = "Posted: "+job.date;
 	salary.textContent = "$"+job.salaryMin + " - " + "$"+job.salaryMax;
 	url.textContent = job.url;
 	location.textContent = job.location;
 	requirements.textContent = job.requirements;
-	supervisory.textContent = job.supervisory;
-	status.textContent = job.status;
-	company.textContent = job.getCompany.getName;
+	
+	if (job.supervisory === true) {
+	supervisory.textContent = "Supervisory position"
+	} else {
+	supervisory.textContent = "Non-Supervisory position"
+	}
+	status.textContent = "Status: " + job.status;
 	
 
 	ul.appendChild(date);
@@ -152,7 +169,6 @@ function displayJob(job) {
 	ul.appendChild(requirements);
 	ul.appendChild(supervisory);
 	ul.appendChild(status);
-	ul.appendChild(company);
 
 	dataDiv.appendChild(ul);
 
@@ -213,12 +229,12 @@ function showUpdateForm(job) {
 	form.appendChild(br1);
 	
 	let nameMaxSalary = document.createElement('lable');
-	nameMaxSalary.textContent = 'Description: ';
+	nameMaxSalary.textContent = 'Max Salary: ';
 	form.appendChild(nameMaxSalary);
 
 	var inputMaxSalary = document.createElement('input');
 	inputMaxSalary.type = 'text';
-	inputMaxSalary.name = 'title';
+	inputMaxSalary.name = 'salaryMax';
 	inputMaxSalary.value = job.salaryMax;
 	form.appendChild(inputMaxSalary);
 	
@@ -226,12 +242,12 @@ function showUpdateForm(job) {
 	form.appendChild(br2);
 	
 	let nameMinSalary = document.createElement('lable');
-	nameMinSalary.textContent = 'MinSalary: ';
+	nameMinSalary.textContent = 'Min Salary: ';
 	form.appendChild(nameMinSalary);	
 	
 	var inputMinSalary = document.createElement('input');
 	inputMinSalary.type = 'text';
-	inputMinSalary.name = 'minsalary';
+	inputMinSalary.name = 'salaryMin';
 	inputMinSalary.value = job.salaryMin;
 	form.appendChild(inputMinSalary);
 	
@@ -242,7 +258,7 @@ function showUpdateForm(job) {
 	nameUrl.textContent = 'Url: ';
 	form.appendChild(nameUrl);
 	
-	var inputTitle = document.createElement('input');
+	var inputUrl = document.createElement('input');
 	inputUrl.type = 'text';
 	inputUrl.name = 'url';
 	inputUrl.value = job.url;
@@ -251,11 +267,11 @@ function showUpdateForm(job) {
 	let br4 = document.createElement('br');
 	form.appendChild(br4);
 	
-	let nameDescription = document.createElement('lable');
+	let nameDescription = document.createElement('label');
 	nameDescription.textContent = 'Description: ';
 	form.appendChild(nameDescription);
 	
-	var inputDescription= document.createElement('input');
+	var inputDescription = document.createElement('input');
 	inputDescription.type = 'text';
 	inputDescription.name = 'description';
 	inputDescription.value = job.description;
@@ -358,8 +374,6 @@ function showUpdateForm(job) {
 
 function updateJob(job)  {
 	
-		e.preventDefault();
-	
 		let xhr = new XMLHttpRequest();
 		xhr.open('PUT', 'api/jobs' + job.id, true);
 	
@@ -429,6 +443,7 @@ function deleteJob(job)  {
 }
  
 function getBySalary() {
+		e.preventDefault();
 	let xhr = new XMLHttpRequest();
 	
 	let jobSalary = document.getElementById('getBySalary');
@@ -463,3 +478,4 @@ function getBySalary() {
 function displayJobsSalary() {
 	
 }
+};
