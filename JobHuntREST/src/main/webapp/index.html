@@ -11,16 +11,10 @@
 table, th, td {
   border: 1px solid;
 }
+
 table {width: 100%;}
 
-table.row-clickable tbody tr td {
-    padding: 0;
-}
-
-table.row-clickable tbody tr td a {
-    display: block;
-    padding: 8px;
-}
+table tr:hover{cursor:pointer;}
 
 </style>
 
@@ -36,14 +30,16 @@ table.row-clickable tbody tr td a {
     </form>
 <br>
 
- <form name="getBySalaryMin" id="getBySalaryMin">
-      <input type="number" name="salaryMin" placeholder="$100, 000" required min="1"><br> 
-      <button name="lookupBySalaryMin">Get Jobs by Min Salary</button><br><br>
+ <form name="getBySalaryBetween" id="getBySalaryBetween">
+      Min Salary <input type="number" name="salaryMinDown" placeholder="50000" required min="1"><br> 
+      Max Salary <input type="number" name="salaryMinUp" placeholder="150000" required min="1"><br> 
+      <button name="lookupBySalaryMin">Search Min Salary</button><br><br>
     </form>
 
 <div id="output">
 	<div id="jobDataSalary"></div>
 	<div id="jobData"></div>
+	<br>
 	<div id="oneJobData"></div>
 	<div id="editJob"></div>
 	<div id="companyJobData"></div>

@@ -11,10 +11,10 @@ function init() {
 
 	document.addJobForm.submit.addEventListener('click', function(event) {
 		event.preventDefault();
-		createJob();
+		addNewJob();
 	});
 
-	document.getBySalaryMin.lookupBySalaryMin.addEventListener('click', function(event) {
+	document.getBySalaryBetween.lookupBySalaryMin.addEventListener('click', function(event) {
 		event.preventDefault();
 		getBySalary();
 	});
@@ -28,7 +28,6 @@ function getAllJobs() {
 		if (xhr.readyState === 4 && xhr.status < 400) {
 	
 				let job = JSON.parse(xhr.responseText);
-				console.log(job);
 				displayJobs(job);
 			}
 
@@ -86,12 +85,13 @@ function displayJobs(jobs)  {
 
 	
 });
+}
 
 
-function createJob(e) {
-	e.preventDefault();
-
-	let xhr = new XMLHttpRequest();
+function addNewJob() {
+	
+	var xhr = new XMLHttpRequest();
+	
 	xhr.open('POST', 'api/jobs', true);
 
 	xhr.setRequestHeader("Content-type", "application/json"); 
@@ -108,19 +108,19 @@ function createJob(e) {
 			}
 		}
 	};
-		let form = document.addJob;
+		let form = document.addJobForm;
 
 		let newJobObject = {
-		Title: document.createJobForm.title.value,
-		Date : document.createJobForm.date.value,
-		salaryMax: document.createJobForm.salaryMax.value,
-		salaryMin: document.createJobForm.salaryMin.value,
-		Url: document.createJobForm.url.value,
-		Description: document.createJobForm.description.value,
-		Location: document.createJobForm.location.value,
-		Requirements: document.createJobForm.requirements.value,
-		Supervisory: false,
-		Status: document.createJobForm.status.value,
+		title: form.title.value,
+		date : form.date.value,
+		salaryMax: form.salaryMax.value,
+		salaryMin: form.salaryMin.value,
+		url: form.url.value,
+		description: form.description.value,
+		location: form.location.value,
+		requirements: form.requirements.value,
+		supervisory: false,
+		status: form.status.value,
 	};
 	var objectJson = JSON.stringify(newJobObject);
 	xhr.send(objectJson);
@@ -131,8 +131,11 @@ function displayJob(job) {
 	let dataDiv = document.getElementById('oneJobData');
 	dataDiv.textContent = '';
 
+	let br = document.createElement('br');
+	dataDiv.appendChild(br);
+
 	let h4 = document.createElement('h4');
-	h4.textContent = "Job #"+ job.id + "("+job.company.name+"): " + job.title;
+	h4.textContent = "Job #"+ job.id + ": ("+job.company.name+")- " + job.title;
 	dataDiv.appendChild(h4);
 
 	let descripJ = document.createElement('p');
@@ -320,7 +323,6 @@ function showUpdateForm(job) {
 	editButton.innerHTML = "Submit Edited Job";
 	dataDiv.appendChild(editButton);
 		
-	let editJob = document.getElementById('editForm');
 	
 	editButton.addEventListener('click', function(e) {
 		e.preventDefault();
@@ -330,7 +332,7 @@ function showUpdateForm(job) {
 	let editedJob =  {
 		id: form.id.value,
 		title: form.title.value,
-		date : 2022-05-01,
+		date : form.date.value,
 		salaryMax: form.salaryMax.value,
 		salaryMin: form.salaryMin.value,
 		url: form.url.value,
@@ -348,10 +350,11 @@ function showUpdateForm(job) {
 						website:  "insert website url"
 					}
 		}
-		
-	updateJob(editedJob);
+		console.log(editedJob);	
+		updateJob(editedJob);
 
-});
+	});
+
 
 	let br8 = document.createElement('br');
 	dataDiv.appendChild(br8);
@@ -375,7 +378,7 @@ function showUpdateForm(job) {
 function updateJob(job)  {
 	
 		let xhr = new XMLHttpRequest();
-		xhr.open('PUT', 'api/jobs' + job.id, true);
+		xhr.open('PUT', 'api/jobs/' + job.id, true);
 	
 		xhr.setRequestHeader("Content-type", "application/json"); 
 
@@ -410,14 +413,11 @@ function updateJob(job)  {
 
 function deleteJob(job)  {
 	
-		e.preventDefault();
-	
 		let xhr = new XMLHttpRequest();
-		xhr.open('DELETE', 'api/jobs' + job.id, true);
+		xhr.open('DELETE', 'api/jobs/' + job.id, true);
 	
 		xhr.setRequestHeader("Content-type", "application/json"); 
 
-	
 		xhr.onreadystatechange = function() {
 		if (xhr.readyState === 4) {
 			if (xhr.status == !204) {
@@ -443,16 +443,18 @@ function deleteJob(job)  {
 }
  
 function getBySalary() {
-		e.preventDefault();
+		
 	let xhr = new XMLHttpRequest();
 	
-	let jobSalary = document.getElementById('getBySalary');
+	let jobSalary = document.getElementById('getBySalaryBetween');
 	
-	xhr.open('GET', 'api/jobs/' + salaryMinSearch, true);
+	xhr.open('GET', 'api/jobs/search/salary/' + jobSalary.salaryMinDown.value 
+	+ '/' + jobSalary.salaryMinUp.value, true);
 	xhr.onreadystatechange = function() {
 		if (xhr.readyState === 4 && xhr.status == 200) {
 			let data = JSON.parse(xhr.responseText);
 			displayJobsSalary(data);
+			console.log(data);
 			}
 			
 			
@@ -466,16 +468,56 @@ function getBySalary() {
 				dataDiv.appendChild(hr);
 				let h2 = document.createElement('h2');
 				dataDiv.appendChild(h2);
-				h2.textContent = "No jobs found for: " + salaryMinSearch;		
+				h2.textContent = "No jobs found for: " + jobSalary.salaryMinDown.value 
+				+ ' - ' + jobSalary.salaryMinUp.value;		
 			}
 		};
 	
 		xhr.send(null);
 	}
-				
-				
-				
-function displayJobsSalary() {
+							
+function displayJobsSalary(data) {
+	let jobSalary = document.getElementById('getBySalaryBetween');
+	var dataDiv = document.getElementById('jobDataSalary');
+	dataDiv.textContent = '';
 	
+	let hr = document.createElement('hr');
+	hr.textContent = "Tracking " + data.length + " jobs with min salary between $" 
+		+ jobSalary.salaryMinDown.value+" and $" + jobSalary.salaryMinUp.value;
+	dataDiv.appendChild(hr);
+	
+	let br = document.createElement('br');
+	dataDiv.appendChild(br);
+	
+	var table = document.createElement('table');
+	table.id = 'jobsSalaryTable';
+
+	var thead = document.createElement('thead');
+	
+	data.forEach(function(val, ind, arr){
+	
+		var tr = document.createElement('tr');
+		var jobId = document.createElement('td');
+		var jobComp = document.createElement('td');
+		var jobTitle = document.createElement('td');
+	//	var jobSalMin = document.createElement('td');
+	//	var jobSalMax = document.createElement('td');
+	
+		jobId.textContent = val.id;
+		jobComp.textContent = val.company.name;
+		jobTitle.textContent = val.title;
+	//	jobSalMin = val.salaryMin;
+	//	jobSalMax = val.salaryMax.value;
+			
+		tr.appendChild(jobId);
+		tr.appendChild(jobComp);
+		tr.appendChild(jobTitle);
+	// 	tr.appendChild(jobSalMin);
+	//	tr.appendChild(jobSalMax);
+		thead.appendChild(tr);
+		
+
+	table.appendChild(thead);
+	dataDiv.appendChild(table);
+});
 }
-};
