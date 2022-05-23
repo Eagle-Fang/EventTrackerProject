@@ -1,0 +1,296 @@
+ <nav class="navbar navbar-expand-sm navbar-dark bg-primary">
+  <a class="navbar-brand" [routerLink]="['/home']" (click)="list=null">JobHunt Tracker</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup"
+    aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation"
+    (click)="isCollapsed = !isCollapsed" [attr.aria-expanded]="!isCollapsed">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+   <!-- <div class="collapse navbar-collapse" id="navbarNavAltMarkup" [ngbCollapse]='isCollapsed'>   -->
+    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item"><a
+          (click)="addForm=null; list=true; searchResult=null; loadJobs(); selected=null; editJob=null"
+          class="nav-link">
+          List All </a></li>
+      <li class="nav-item"><a (click)="addForm=true; list=true" class="nav-link">Add Job</a></li>
+      <li class="nav-item"><a [routerLink]="['/jobs']" (click)="list=null" class="nav-link">Search</a></li>
+    </ul>
+  </div>
+</nav>
+
+
+
+
+<div class="contaner-fluid">
+
+  <div *ngIf="!list">
+    <br>
+    <div class="text-center">
+      <h2>Keep track your job hunt. </h2>
+    </div>
+    <br>
+    <div class="row">
+      <div class="col-3"></div>
+      <div class="col-6">
+        <div class="container-center">
+          <button class="btn btn-dark my-2 my-sm-0" type="submit" (click)="list=true; searchResult=null">See tracked
+            jobs</button>
+          <br>
+          <br>
+          <button class="btn btn-dark my-2 my-sm-0" type="submit" (click)="addForm=true; list=true">Add a
+            job</button>
+          <br>
+          <br>
+          <form class="form-group my-2 my-lg-0">
+            <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search" name="keyword"
+              [(ngModel)]="keyword">
+            <button class="btn btn-dark my-2 my-sm-0" type="submit"
+              (click)="search(); list=true; searchResult=true">Search by keyword</button>
+          </form>
+          <br>
+        </div>
+
+      </div>
+      <div class="col-3"></div>
+    </div>
+  </div>
+
+  <div class="container">
+    <div *ngIf="list">
+      <div *ngIf="!selected && !addForm && !searchResult">
+        <br>
+        <div class="text-center">
+          <h2>List of Jobs</h2>
+        </div>
+        <table class="table table-primary table-bordered">
+          <thead class="thead-dark">
+            <tr>
+              <th scope="col">Job ID</th>
+              <th scope="col">Company</th>
+              <th scope="col">Title</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of jobs">
+              <td scope="row" (click)="displayJob(item)">{{item.id}}</td>
+              <td>{{item.company?.name}}</td>
+              <td>{{item.title}}</td>
+            </tr>
+          </tbody>
+        </table>
+        <div class="text-center">
+          <p>Click a Job ID for more details or to edit the item.</p>
+        </div>
+      </div>
+
+
+      <div *ngIf="list">
+        <div *ngIf="!selected && !addForm && hideSearchResult && searchJobs.length === 0">
+          <br>
+          <div class="text-center">
+            <h2>No Results Found</h2>
+            <div class="row">
+              <div class="col-3"></div>
+              <div class="col-6">
+                <div class="container-center">
+                  <form class="form-group my-2 my-lg-0">
+                    <input class="form-control mr-sm-2" type="search" placeholder="Search" aria-label="Search"
+                      name="keyword" [(ngModel)]="keyword">
+                    <button class="btn btn-dark my-2 my-sm-0" type="submit"
+                      (click)="search(); list=true; searchResult=true">Search by keyword</button>
+                  </form>
+                  <br>
+                </div>
+              </div>
+            </div>
+            <div class="col-3"></div>
+          </div>
+        </div>
+        <div *ngIf="!selected && !addForm && searchJobs.length > 0">
+          <br>
+          <div class="text-center">
+            <h2>Search Results</h2>
+          </div>
+          <table class="table table-primary table-bordered">
+            <thead class="thead-dark">
+              <tr>
+                <th scope="col">Job ID</th>
+                <th scope="col">Company</th>
+                <th scope="col">Title</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let item of jobs">
+                <td scope="row" (click)="displayJob(item)">{{item.id}}</td>
+                <td>{{item.company?.name}}</td>
+                <td>{{item.title}}</td>
+              </tr>
+            </tbody>
+          </table>
+          <div class="text-center">
+            <p>Click a Job ID for more details or to edit the item.</p>
+          </div>
+        </div>
+
+
+        <div class="row">
+          <div class="col-3"></div>
+          <div class="col-6">
+            <div *ngIf="addForm">
+              <br>
+              <div class="text-center">
+
+
+
+         <h2>Add Job</h2>
+        </div>
+        <form *ngIf="!selected" class="form-group">
+            <label for="title">Title:
+              <input class="form-control" type="text" name="title" placeholder="title" [(ngModel)]="newJob.title" />
+            </label> <br>
+            <label for="description">Description:
+              <textarea class="form-control" cols="40" rows="5" type="text" name="description"
+                placeholder="description" [(ngModel)]="newJob.description"></textarea>
+            </label> <br>
+
+            <label for="salaryMin">Max Salary:
+              <input class="form-control" type="text" name="salaryMax" placeholder="0"
+                [(ngModel)]="newJob.salaryMax" />
+            </label> <br>
+            <label for="salaryMin">Min Salary:
+              <input class="form-control" type="text" name="salaryMin" placeholder="0"
+                [(ngModel)]="newJob.salaryMin" />
+            </label> <br>
+            <label for="date">Date:
+              <input class="form-control" type="date" name="date" [(ngModel)]="newJob.date" />
+            </label> <br>
+            <label for="url">Url:
+              <input class="form-control" cols="40" type="text" name="url" placeholder="name@url.com"
+                [(ngModel)]="newJob.url" />
+            </label> <br>
+            <label for="location">Location:
+              <textarea class="form-control" type="text" name="location"
+                placeholder="location" [(ngModel)]="newJob.location"></textarea>
+            </label> <br>
+            <label for="supervisory">Supervisory:
+              <input class="form-control" type="checkbox" name="supervisory"
+                [(ngModel)]="newJob.supervisory" />
+            </label> <br>
+            <label for="requirements">Requirements:
+              <textarea class="form-control"  cols="40" type="text" name="requirements"
+                placeholder="requirements" [(ngModel)]="newJob.requirements"></textarea>
+            </label> <br>
+
+            <label for="description">Status:
+              <textarea class="form-control" cols="40" type="text" name="description"
+                placeholder="description" [(ngModel)]="newJob.description"></textarea>
+            </label> <br>
+          <div class="btn-group" role="group" aria-label="Basic example">
+            <input type="submit" value="Add Item" (click)="addJob(); displayJob(newJob); addForm=null"
+              class="btn btn-success" />
+            <button (click)="addForm=null; list=true; searchResult=null; loadJobs(); selected=null; editJob=null "
+              class="btn btn-dark my-2 my-sm-0">Cancel</button>
+          </div>
+        </form>
+      </div>
+
+
+
+            <div *ngIf="selected">
+              <br>
+              <div class="text-center">
+                <h2>Job Details</h2>
+              </div>
+              <ul class="list-group">
+                <li class="list-group-item" *ngIf="this.selected && this.selected.id && this.selected.id > 0">
+                  Id:
+                  {{selected.id}}</li>
+                <li class="list-group-item ">Title: {{selected.title | titlecase }}</li>
+                <li class="list-group-item"
+                  *ngIf="this.selected && this.selected.description && this.selected.description.length > 0">
+                  Description:
+                  {{selected.description}}</li>
+                <li class="list-group-item ">Max Salary: ${{selected.salaryMax}}</li>
+                <li class="list-group-item ">Min Salary: ${{selected.salaryMin}}</li>
+                <li class="list-group-item ">Url: {{selected.url}}</li>
+                <li class="list-group-item ">Location: {{selected.location}}</li>
+                <li class="list-group-item">Requirements: {{selected.requirements}}</li>
+                <li class="list-group-item">Date: {{selected.date | date:'fullDate'}}</li>
+                <li class="list-group-item ">Status: {{selected.status}}</li>
+              </ul>
+              <br>
+              <div class="btn-group" role="group" aria-label="Basic example">
+                <span>
+                  <div class="btn-group" role="group" aria-label="Basic example">
+                    <button (click)="setEditJob()" class="btn btn-warning my-2 my-sm-0">Edit</button>
+                    <button (click)="selected=null; editJob=null" class="btn btn-dark my-2 my-sm-0">Back to the
+                      list</button>
+                  </div>
+                </span>
+              </div>
+            </div>
+
+            <div *ngIf="editJob != undefined" class="form-group">
+              <br>
+              <div class="text-center">
+                <h2>Edit Job Details</h2>
+              </div>
+              <form>
+                <h2>Job Id: {{editJob.id}}</h2>
+
+
+
+                  <label for="title">Title:
+                    <input class="form-control" type="text" name="title" placeholder="title" [(ngModel)]="editJob.title" />
+                  </label> <br>
+                  <label for="description">Description:
+                    <textarea class="form-control" cols="40" rows="5" type="text" name="description"
+                      placeholder="description" [(ngModel)]="editJob.description"></textarea>
+                  </label> <br>
+                  <label for="salaryMax">Max Salary:
+                    <textarea class="form-control"  type="number" name="salaryMax"
+                      placeholder="Max_Salary" [(ngModel)]="editJob.salaryMax">
+                  </label> <br>
+                  <label for="salaryMin">Min Salary:
+                    <textarea class="form-control"  type="number" name="salaryMin" min="0"
+                      placeholder="Min_Salary" [(ngModel)]="editJob.salaryMin"></textarea>
+                  </label> <br>
+                  <label for="supervisory">Supervisory:
+                    <input class="form-control" type="checkbox" name="supervisory" placeholder="supervisory"
+                      [(ngModel)]="editJob.supervisory" />
+                  </label> <br>
+                  <label for="url">Url:
+                    <input class="form-control" type="text" name="url" placeholder="name@url.com"
+                      [(ngModel)]="editJob.url" />
+                  </label> <br>
+                  <label for="location">Location:
+                    <textarea class="form-control" type="text" name="location"
+                      placeholder="location" [(ngModel)]="editJob.location"></textarea>
+                  </label> <br>
+                  <label for="requirements">Requirements:
+                    <textarea class="form-control"  type="text" name="requirements"
+                      placeholder="requirements" [(ngModel)]="editJob.requirements"></textarea>
+                  </label> <br>
+
+                  <label for="description">Status:
+                    <textarea class="form-control" type="text" name="description"
+                      placeholder="description" [(ngModel)]="editJob.description"></textarea>
+                  </label> <br>
+
+                <div class="btn-group" role="group" aria-label="Basic example">
+                  <input class="form-control" type="submit" value="Save" (click)="editSubmit()"
+                    class="btn btn-success my-2 my-sm-0" />
+                  <button (click)="selected=null; editJob=null" class="btn btn-dark my-2 my-sm-0">Cancel</button>
+                  <button *ngIf="editJob.id > 9" (click)="deleteJob(editJob.id); selected=null; editJob=null"
+                    class="btn btn-danger my-2 my-sm-0">Delete from tracker</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        <div class="col-3"></div>
+      </div>
+    </div>
+    <br><br>
+  </div>
+</div>
