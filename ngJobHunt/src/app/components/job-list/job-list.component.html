@@ -5,7 +5,6 @@
     (click)="isCollapsed = !isCollapsed" [attr.aria-expanded]="!isCollapsed">
     <span class="navbar-toggler-icon"></span>
   </button>
-   <!-- <div class="collapse navbar-collapse" id="navbarNavAltMarkup" [ngbCollapse]='isCollapsed'>   -->
     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item"><a
@@ -17,8 +16,6 @@
     </ul>
   </div>
 </nav>
-
-
 
 
 <div class="contaner-fluid">
@@ -160,7 +157,8 @@
             <label for="salaryMin">Min Salary:
               <input class="form-control" type="text" name="salaryMin" placeholder="0"
                 [(ngModel)]="newJob.salaryMin" />
-            </label> <br>
+
+              </label> <br>
             <label for="date">Date:
               <input class="form-control" type="date" name="date" [(ngModel)]="newJob.date" />
             </label> <br>
@@ -173,8 +171,7 @@
                 placeholder="location" [(ngModel)]="newJob.location"></textarea>
             </label> <br>
             <label for="supervisory">Supervisory:
-              <input class="form-control" type="checkbox" name="supervisory"
-                [(ngModel)]="newJob.supervisory" />
+              <input type="checkbox" name="supervisory" [(ngModel)]="newJob.supervisory" />
             </label> <br>
             <label for="requirements">Requirements:
               <textarea class="form-control"  cols="40" type="text" name="requirements"
